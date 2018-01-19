@@ -2,8 +2,8 @@
 %  Work Package Description  %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{workpackage}{MANAGEMENT  WORK PACKAGE}
-  \label{wp:management} %change and use appropriate description
+\begin{workpackage}{DEVELOPMENT WORK PACKAGE}
+  \label{wp:develop} %change and use appropriate description
 
   %%%%%%%%%%%%%%%%%% TOP TABLE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   % Data for the top table
@@ -16,9 +16,9 @@
   %     or  \personmonths{Participant short name}{value} (not wp leader)
   %         \personmonths*{Participant number}{value}    (wp leader)
   % for example:
-  \personmonths*{UoC}{12}
-  \personmonths{UoP2}{3}
-  \personmonths{UoP3}{2}
+  \personmonths*{UoP2}{12}
+  \personmonths{UoP3}{6}
+  \personmonths{UoC}{3}
   % etc.
 
   \makewptable % Work package summary table
@@ -43,20 +43,20 @@
     with role of partners list. Use the \texttt{\textbackslash wptask} command.
 
     \wptask{UoC}{UoC}{1}{12}{Test}{
-      \label{task:wp1test}
+      \label{task:wp2test}
       Here we will test the WP Task code. 
     }
     \wptask{UoC}{UoC}{6}{9}{Integrate}{
-      \label{task:wp1integrate}
-      In this task UZH will integrate the work done in ~\ref{task:wp1test}.
+      \label{task:wp2integrate}
+      In this task UZH will integrate the work done in ~\ref{task:wp2test}.
     }    
-    \wptask{UoP3}{All other}{9}{12}{Apply}{
+    \wptask{UoP2}{All other}{9}{12}{Apply}{
       Here all the WP participants will apply the results to...
     }
     
     \paragraph{Role of partners}
     \begin{description}
-    \item[Participant short name] will lead Task~\ref{task:wp1integrate}.
+    \item[Participant short name] will lead Task~\ref{task:wp2integrate}.
     \item[UoC] will..
     \end{description}
   \end{wpdescription}
@@ -77,13 +77,13 @@
     % \wpdeliverable[date]{R}{PU}{A report on \ldots}
 
     \wpdeliverable[36]{UoC}{R}{PU}{Report on the definition of the model
-      specifications.}\label{dev:wp1specs}
+      specifications.}\label{dev:wp2specs}
     
     \wpdeliverable[12]{UoP3}{R}{PU}{Report on Feasibility study for the model
-      implementation.}\label{dev:wp1implementation}
+      implementation.}\label{dev:wp2implementation}
 
     \wpdeliverable[24]{UoP2}{R}{PU}{Prototype of model
-      implementation.}\label{dev:wp1prototype}
+      implementation.}\label{dev:wp2prototype}
 
   \end{wpdeliverables}
 

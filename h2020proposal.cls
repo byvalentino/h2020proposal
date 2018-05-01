@@ -296,6 +296,19 @@
     \noindent%
     \ignorespacesafterend
   }%
+  
+  %% WP Target Group environment for Dissemination
+  \newenvironment{wptarget}
+  {
+    \noindent
+    \begin{framed}
+      \vspace{-15pt}
+      \subsubsection*{Target Groups}
+    }{%
+    \end{framed}
+    \noindent%
+    \ignorespacesafterend
+  }%
 
   %% WP description environment
   \newenvironment{wpdescription}
@@ -326,7 +339,7 @@
   \par\noindent%
   \ignorespacesafterend
 }%
-
+%%FIX THE LEAD TIME OF THE TASKS IN CASE IT SHOULD BE IN MULTIPLE SPRINTS
 \newcommand{\wptask}[6]
 {% leader, contributors, start, end, title, description
   \refstepcounter{@wptask} 
@@ -352,6 +365,68 @@
   \paragraph{Task \the@wptask:  #5 (M#3-M#4) } 
   \hfill \emph{Leader: \textbf{#1}. Contributors: #2}\\
   {#6}
+  \vspace{-8pt}
+  \if@draftmode%
+  \newpage
+  \fi
+}%
+
+\newcommand{\wptaskB}[8]
+{% leader, contributors, start1, end1, start2, end2, title, description
+  \refstepcounter{@wptask} 
+  \stepcounter{@tottask}
+  \stepcounter{@wp\arabic{@wpcount}tottk}  
+  % Linear vector for task list  index entries
+  \newcounter{@tk\arabic{@tottask}WP}
+  \setcounter{@tk\arabic{@tottask}WP}{\value{@wpcount}}
+  \newcounter{@tk\arabic{@tottask}T}
+  \setcounter{@tk\arabic{@tottask}T}{\value{@wptask}}
+  % Strings
+  \expandafter\xdef\csname
+  @wp\arabic{@wpcount}Task\arabic{@wptask}Leader\endcsname{\getPnum{#1}}
+  \expandafter\xdef\csname
+  @wp\arabic{@wpcount}Task\arabic{@wptask}Contributors\endcsname{#2}
+  \expandafter\xdef\csname
+  @wp\arabic{@wpcount}Task\arabic{@wptask}Start\endcsname{#3}
+  \expandafter\xdef\csname
+  @wp\arabic{@wpcount}Task\arabic{@wptask}End\endcsname{#6}
+  \expandafter\xdef\csname
+  @wp\arabic{@wpcount}Task\arabic{@wptask}Title\endcsname{#5}
+%  \begin{shaded} \paragraph{Task \the@wptask} \textbf{#5 (M#3-M#4)}\end{shaded}
+  \paragraph{Task \the@wptask:  #7 (M#3-M#4,M#5-M#6) } 
+  \hfill \emph{Leader: \textbf{#1}. Contributors: #2}\\
+  {#8}
+  \vspace{-8pt}
+  \if@draftmode%
+  \newpage
+  \fi
+}%
+
+\newcommand{\wptaskC}[9]
+{% leader, contributors, start1, end1, start2-end2, start3, end3, title, description
+  \refstepcounter{@wptask} 
+  \stepcounter{@tottask}
+  \stepcounter{@wp\arabic{@wpcount}tottk}  
+  % Linear vector for task list  index entries
+  \newcounter{@tk\arabic{@tottask}WP}
+  \setcounter{@tk\arabic{@tottask}WP}{\value{@wpcount}}
+  \newcounter{@tk\arabic{@tottask}T}
+  \setcounter{@tk\arabic{@tottask}T}{\value{@wptask}}
+  % Strings
+  \expandafter\xdef\csname
+  @wp\arabic{@wpcount}Task\arabic{@wptask}Leader\endcsname{\getPnum{#1}}
+  \expandafter\xdef\csname
+  @wp\arabic{@wpcount}Task\arabic{@wptask}Contributors\endcsname{#2}
+  \expandafter\xdef\csname
+  @wp\arabic{@wpcount}Task\arabic{@wptask}Start\endcsname{#3}
+  \expandafter\xdef\csname
+  @wp\arabic{@wpcount}Task\arabic{@wptask}End\endcsname{#7}
+  \expandafter\xdef\csname
+  @wp\arabic{@wpcount}Task\arabic{@wptask}Title\endcsname{#5}
+%  \begin{shaded} \paragraph{Task \the@wptask} \textbf{#5 (M#3-M#4)}\end{shaded}
+  \paragraph{Task \the@wptask: #8 (M#3-M#4,#5,M#6-M#7) } 
+  \hfill \emph{Leader: \textbf{#1}. Contributors: #2}\\
+  {#9}
   \vspace{-8pt}
   \if@draftmode%
   \newpage
@@ -488,11 +563,19 @@
 
 
 %% Direct Costs Macros
-
+\newcounter{@costsA}  % Artists costs counter
 \newcounter{@costsT}  % Travel costs counter
 \newcounter{@costsE}  % Equipment costs counter
 \newcounter{@costsO}  % Other costs counter
-\newcounter{@totcosts} % Total costs counter
+\newcounter{@totcosts}% Total costs counter
+
+\newcommand{\costsArtists}[3]{%
+  % {participant}{cost}{justification}
+  \setcounter{@costsA}{\getPnum{#1}}%
+  \newcounter{@dcapnum\arabic{@costsA}}
+  \addtocounter{@dcapnum\arabic{@costsA}}{#2}
+  \expandafter\protected@xdef\csname @aJustification\arabic{@costsA}\endcsname{#3}%
+}
 
 \newcommand{\costsTravel}[3]{%
   % {participant}{cost}{justification}
@@ -520,6 +603,7 @@
 
 %% Other direct costs Table
 \newcommand{\makecoststable} {%
+  \newboolean{@dcadefined}
   \newboolean{@dctdefined}
   \newboolean{@dcedefined}
   \newboolean{@dcodefined}
@@ -531,6 +615,9 @@
       \stepcounter{@row}
       \setcounter{@totcosts}{0}
 
+      \@ifundefined{c@@dcapnum\arabic{@row}}{%
+        \setboolean{@dcadefined}{false}}{%
+        \setboolean{@dcadefined}{true}}
       \@ifundefined{c@@dctpnum\arabic{@row}}{%
         \setboolean{@dctdefined}{false}}{%
         \setboolean{@dctdefined}{true}}
@@ -541,6 +628,8 @@
         \setboolean{@dcodefined}{false}}{%
         \setboolean{@dcodefined}{true}}
       \ifthenelse{
+        \boolean{@dcadefined} 
+        \OR
         \boolean{@dctdefined} 
         \OR
         \boolean{@dcedefined} 
@@ -555,6 +644,14 @@
           \cellcolor[gray]{0.8} \textbf{Cost (EUR)} &
           \cellcolor[gray]{0.8} \textbf{Justification}
           \\ \hline
+          \ifthenelse{\boolean{@dcadefined}}{%
+            \addtocounter{@totcosts}{\value{@dcapnum\arabic{@row}}}
+            %\hline
+            \cellcolor[gray]{0.8} \textbf{Artists fee} &
+            \arabic{@dcapnum\arabic{@row}} &
+            \csname @aJustification\arabic{@row}\endcsname 
+            \\ \hline
+          }{}%
           \ifthenelse{\boolean{@dctdefined}}{%
             \addtocounter{@totcosts}{\value{@dctpnum\arabic{@row}}}
             %\hline
@@ -579,6 +676,75 @@
           }{}%
           \cellcolor[gray]{0.8} \textbf{Total} &
           {\arabic{@totcosts}} &
+          \\ \hline
+        \end{tabularx}\\
+      }{}% 
+    }%
+  }%
+}%
+
+
+%% Artists Costs Macros for STARTS
+\newcounter{@costsOC} % Open-calls costs counter
+\newcounter{@totacosts}% Total Artists costs counter
+
+\newcommand{\costsOpencalls}[3]{%
+  % {participant}{cost}{justification}
+  \setcounter{@costsOC}{\getPnum{#1}}%
+  \newcounter{@dczpnum\arabic{@costsOC}}
+  \addtocounter{@dczpnum\arabic{@costsOC}}{#2}
+  \expandafter\protected@xdef\csname @zJustification\arabic{@costsOC}\endcsname{#3}%
+}
+
+\newcommand{\makeartstable} {%
+  \newboolean{@dczdefined}
+%  \newboolean{@dcadefined}
+  \setcounter{@row}{0}
+  \ifthenelse{\value{@pcount}<1}{\ClassWarning{h2020proposal}{No
+      participants defined yet. Use the \texttt{\textbackslash
+        participant} command to define new participants.}}{%
+    \whiledo{\value{@row}<\value{@pcount}}{%
+      \stepcounter{@row}
+      \setcounter{@totacosts}{0}
+
+      \@ifundefined{c@@dczpnum\arabic{@row}}{%
+        \setboolean{@dczdefined}{false}}{%
+        \setboolean{@dczdefined}{true}}
+    \@ifundefined{c@@dcapnum\arabic{@row}}{%
+       \setboolean{@dcadefined}{false}}{%
+       \setboolean{@dcadefined}{true}}
+     \ifthenelse{
+        \boolean{@dczdefined} 
+        \OR
+        \boolean{@dcadefined} 
+      }{%
+        \noindent
+        \begin{tabularx}{\textwidth}{|l| p{4em}| X |}
+          \hline
+          \cellcolor[gray]{0.8} \textbf{Artists Budget Part. no. \arabic{@row}}
+          \textbf{(\csname @pShortName\arabic{@row}\endcsname)} &
+          \cellcolor[gray]{0.8} \textbf{Cost (EUR)} &
+          \cellcolor[gray]{0.8} \textbf{Justification}
+          \\ \hline
+          \ifthenelse{\boolean{@dczdefined}}{%
+            \addtocounter{@totacosts}{\value{@dczpnum\arabic{@row}}}
+            %\hline
+            \cellcolor[gray]{0.8} \textbf{Open-calls\footnote{This cost category is limited to the actual amounts paid by the beneficiary to third parties. No indirect costs are accepted for financial support to third parties, and the 25\% flat rate of indirect costs is not 
+applied. For details on the possibility to providing financial support to third parties and the eligibility of these costs please refer to Article 6.1 (general), Article 6.2.C (specific), and Article 15 of the \href{http://ec.europa.eu/research/participants/data/ref/h2020/grants_manual/amga/h2020-amga_en.pdf}{Annotated Model Grant Agreement}}} &
+            \arabic{@dczpnum\arabic{@row}} &
+            \csname @zJustification\arabic{@row}\endcsname 
+            \\ \hline
+          }{}%
+          \ifthenelse{\boolean{@dcadefined}}{%
+            \addtocounter{@totacosts}{\value{@dcapnum\arabic{@row}}}
+            %\hline
+            \cellcolor[gray]{0.8} \textbf{Artists fee} &
+            \arabic{@dcapnum\arabic{@row}} &
+            \csname @aJustification\arabic{@row}\endcsname 
+            \\ \hline
+          }{}%
+          \cellcolor[gray]{0.8} \textbf{Total} &
+          {\arabic{@totacosts}} &
           \\ \hline
         \end{tabularx}\\
       }{}% 
